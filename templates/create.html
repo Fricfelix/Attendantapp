@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+
+{% block head %}
+<title>create</title>
+{% endblock %}
+
+{% block contents%}
+
+<h1 class="text-center mb-3 mt-3" >Create Attendance</h1>
+<div class="input-group mb-3">
+  <div class="input-group-prepend">
+    <label class="input-group-text" for="form-selector">Attendance type</label>
+  </div>
+  <select class="custom-select" id="form-selector">
+    <option selected>Choose...</option>
+    <option value="studentForm">Student Attendance</option>
+    <option value="officeForm">Office Attendance</option>
+  </select>
+</div>
+
+
+
+<div >
+  {% if student_form %}
+      <form method="post" action="" id="student-form" >{% csrf_token %}
+          {{student_form|crispy}}
+          <input class="btn btn-success" type="submit" name="student_form" value="submit"/>
+      </form>
+      {% else %}
+
+  {% endif %}
+
+  {% if office_form %}
+
+    <form method="post" action="" id="office-form" style="display: none;">{% csrf_token %}
+        {{office_form|crispy}}
+        <input class="btn btn-success" type="submit" name="office_form" value="submit"/>
+    </form>
+</div>
+  {% else %}
+
+{% endif %}
+
+{% endblock %}
+
+{%  block scripts %}
+
+<script>
+
+    let studentForm = document.getElementById("student-form");
+    let officeForm = document.getElementById("office-form");
+    let formselector = document.getElementById("form-selector");
+
+    officeForm.style.display = "none";
+    studentForm.style.display = "none";
+    formselector.addEventListener('change',function(){
+      let selectedForm = formselector.value;
+
+      if (selectedForm === "studentForm"){
+        studentForm.style.display = "block";
+        officeForm.style.display = "none";
+      }else if (selectedForm === "officeForm"){
+        studentForm.style.display = "  none"  ;
+        officeForm.style.display = "  block"  ;
+      
+
+      }else{
+        studentForm.style.display = "  none"  ;
+        officeForm.style.display = "  none"  ;
+
+      }
+    });
+</script>
+{%  endblock %}

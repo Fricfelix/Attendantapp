@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+
+{% block head %}
+<title>Contact</title>
+{% endblock %}
+
+{% block contents%}
+
+
+
+
+<h1 class="text-center ">Contact us </h1>
+{% if messages %}
+<div class="px-5 mb-3 ">
+	<div class="messages">
+	{% for message in messages %}
+		<div {% if message.tags %} class="{{ message.tags }} "{% endif %}>{{ message }}</div>
+	{% endfor %}
+</div>
+</div>
+
+{% endif %}
+ 
+
+	<!-- FORM TO BE RENDERED BASED ON CHOICE OF CREATOR  -->
+
+				<!-- ----------FORM-------- -->
+	
+
+	{% if form %}
+<div>	
+	<form method="post" action="">{% csrf_token %}
+		{{form|crispy}}
+		<input class="btn btn-default" type="submit" value="submit"/>
+	</form>
+</div>
+	{% else %}
+
+	{% endif %}
+
+{% endblock%}
+
+{% block scripts %}
+
+	<script>
+		
+		 $(document).ready(function(){
+	window.setTimeout(function() {
+  		$(".messages").fadeTo(500, 0).slideUp(500, function(){
+      		$(this).remove();
+  });
+}, 5000);
+});
+	</script>
+
+{% endblock%}
