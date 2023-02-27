@@ -12,13 +12,16 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 from pathlib import Path
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-EMAIL_HOST = "smtp.gmail.com"
-EMAIL_HOST_USER = "fricfelix@gmail.com"
-EMAIL_HOST_PASSWORD = " wunqirfsxjxvqkiz"
+EMAIL_HOST = os.getenv('EMAIL_HOST') 
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
@@ -26,7 +29,7 @@ EMAIL_USE_TLS = True
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-)*t-pri34uv4iapop(f5%&dai4@)or-ry98j)+%b$(lp!+fshy'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -167,4 +170,4 @@ MESSAGE_TAGS = {
  }
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
-# GEOLOCATION_API = '3f41e0068d734a65bf8f47d196119210'
+
