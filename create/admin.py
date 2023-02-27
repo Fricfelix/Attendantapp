@@ -2,7 +2,10 @@ from django.contrib import admin
 
 # Register your models here.
 
-from .models import StudentAttendanceModel,OfficeAttendanceModel
+from .models import ( StudentAttendanceTakingModel,OfficeAttendanceTakingModel,StudentAttendanceCreationModel,
+OfficeAttendanceCreationModel)
 
-admin.site.register(StudentAttendanceModel)
-admin.site.register(OfficeAttendanceModel)
+admin.site.register(StudentAttendanceTakingModel)
+admin.site.register(OfficeAttendanceTakingModel)
+admin.site.register(StudentAttendanceCreationModel)
+admin.site.register(OfficeAttendanceCreationModel)

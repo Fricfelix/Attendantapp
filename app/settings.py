@@ -30,6 +30,8 @@ SECRET_KEY = 'django-insecure-)*t-pri34uv4iapop(f5%&dai4@)or-ry98j)+%b$(lp!+fshy
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+# when testing my 404 page 
+# ALLOWED_HOSTS = ['*']
 
 ALLOWED_HOSTS = []
 
@@ -44,6 +46,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'crispy_forms',
+    'geoip2',
+    'ipware',
     # My own installed app
 
     'home',
@@ -146,6 +150,8 @@ if DEBUG:
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+GEOIP_PATH = os.path.join(BASE_DIR,'data','GeoLite2-City.mmdb')
 
 
 

@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+
+{% block head %}
+
+{% endblock %}
+
+{% block contents%}
+
+<h1>Take attendance</h1>
+
+
+<div >
+  {% if student_form %}
+      <form method="post" action="" id="student-form" >{% csrf_token %}
+          {{student_form|crispy}}
+          <input class="btn btn-success" type="submit" name="student_form" value="submit"/>
+      </form>
+      {% else %}
+
+  {% endif %}
+
+  
+
+
+{% endblock%}

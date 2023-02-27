@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+
+{% block head %}
+
+{% endblock %}
+
+{% block contents%}
+
+<h1>Take attendance</h1>
+
+
+<div >
+  
+
+  {% if office_form %}
+
+    <form method="post" action="" id="office-form" >{% csrf_token %}
+        {{office_form|crispy}}
+        <input class="btn btn-success" type="submit" name="office_form" value="submit"/>
+    </form>
+</div>
+  
+
+{% endif %}
+
+
+{% endblock%}

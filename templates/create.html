@@ -9,6 +9,16 @@
 {% block contents%}
 
 <h1 class="text-center mb-3 mt-3" >Create Attendance</h1>
+
+
+<!-- create the toggle switch -->
+
+
+{% if attendance_url %}
+  <p>share the attendance link </p>
+  <p style="background-image: red"> <a href="{{attendance_url}}"> {{attendance_url}}</a></p>
+{% endif%}
+
 <div class="input-group mb-3">
   <div class="input-group-prepend">
     <label class="input-group-text" for="form-selector">Attendance type</label>
@@ -21,22 +31,27 @@
 </div>
 
 
-
 <div >
-  {% if student_form %}
-      <form method="post" action="" id="student-form" >{% csrf_token %}
-          {{student_form|crispy}}
-          <input class="btn btn-success" type="submit" name="student_form" value="submit"/>
+
+  {% if studentattendanceForm %}
+      <form method="POST" action="" id="student-form" >{% csrf_token %}
+          {{studentattendanceForm|crispy}}
+          <input type="hidden" name="longitude" id="longitude">
+          <input type="hidden" name="latitude" id="latitude">
+
+          <input class="btn btn-success" type="submit" name="student_form" value="create"/>
       </form>
       {% else %}
 
   {% endif %}
 
-  {% if office_form %}
+  {% if officeattendanceForm %}
 
-    <form method="post" action="" id="office-form" style="display: none;">{% csrf_token %}
-        {{office_form|crispy}}
-        <input class="btn btn-success" type="submit" name="office_form" value="submit"/>
+    <form method="POST" action="" id="office-form" style="display: none;">{% csrf_token %}
+        {{officeattendanceForm|crispy}}
+        <input type="hidden" name="longitude" id="longitude">
+        <input type="hidden" name="latitude" id="latitude">
+        <input class="btn btn-success" type="submit" name="office_form" value="create "/>
     </form>
 </div>
   {% else %}
@@ -48,29 +63,70 @@
 {%  block scripts %}
 
 <script>
+  if (navigator.geolocation) {
+  navigator.geolocation.getCurrentPosition(function(position) {
+    let latitude = position.coords.latitude;
+    let longitude = position.coords.longitude;
+    
+    // Set the value of the hidden fields
+    $('student-form #latitude,#office-form,#latitude').val(latitude);
+    $('student-form #longitude,#office-form,#longitude').val(longitude);
 
-    let studentForm = document.getElementById("student-form");
-    let officeForm = document.getElementById("office-form");
-    let formselector = document.getElementById("form-selector");
+  });
+} else {
+  console.log('Geolocation is not supported by this browser.');
+}
 
-    officeForm.style.display = "none";
-    studentForm.style.display = "none";
-    formselector.addEventListener('change',function(){
-      let selectedForm = formselector.value;
 
-      if (selectedForm === "studentForm"){
-        studentForm.style.display = "block";
-        officeForm.style.display = "none";
-      }else if (selectedForm === "officeForm"){
-        studentForm.style.display = "  none"  ;
-        officeForm.style.display = "  block"  ;
-      
+// if (navigator.geolocation) {
+//   navigator.geolocation.getCurrentPosition(function(position) {
+//   let latitude = position.coords.latitude;
+//   let longitude = position.coords.longitude;
 
-      }else{
-        studentForm.style.display = "  none"  ;
-        officeForm.style.display = "  none"  ;
+//   // You can pass the latitude and longitude to the backend using AJAX
+//   $.ajax({
+//       url: '/create ',
+//       type: 'POST',
+//       data: {
+//           'latitude': latitude,
+//           'longitude': longitude,
+//           csrfmiddlewaretoken: '{{ csrf_token }}'
+//       },
+//       success: function(data) {
+//         console.log('Location data sent to the backend');
+//         console.log(longitude)
+//       }
+//   });
+// });
+// } else {
+// console.log('Geolocation is not supported by this browser.');
+// };
 
-      }
-    });
+
+
+let studentForm = document.getElementById("student-form");
+let officeForm = document.getElementById("office-form");
+let formselector = document.getElementById("form-selector");
+
+officeForm.style.display = "none";
+studentForm.style.display = "none";
+formselector.addEventListener('change',function(){
+let selectedForm = formselector.value;
+
+if (selectedForm === "studentForm"){
+studentForm.style.display = "block";
+officeForm.style.display = "none";
+
+}else if (selectedForm === "officeForm"){
+studentForm.style.display = "  none"  ;
+officeForm.style.display = "  block"  ;
+
+
+}else{
+studentForm.style.display = "  none"  ;
+officeForm.style.display = "  none"  ;
+
+}
+});
 </script>
 {%  endblock %}

@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+
+{% block head %}
+
+{% endblock %}
+
+{% block contents%}
+
+{% if attendance_url %}
+  <p>share the attendance link </p>
+  
+  <div id="copylink">
+  		<p > <a href="{{attendance_url}}"> {{attendance_url}}</a></p><i class="bi bi-clipboard"></i>
+  </div>
+{% endif%}
+
+{% block scripts %}
+<script>
+	
+
+</script>
+
+{% endblock %}
+
+
+{% endblock%}

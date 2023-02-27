@@ -1,5 +1,9 @@
 from django.shortcuts import render
-# from app.settings import GEOLOCATION_API
+from django.http import JsonResponse
+from django.conf import settings 
+import geoip2.database
+import geoip2
+from ipware import ip
 
 # Create your views here.
 
@@ -14,7 +18,7 @@ from django.shortcuts import render, HttpResponse
 
 
 def home_view(request,*args,**kwargs):
-	context = {}
-
+	
+	context = {		}
 	return render(request , 'index.html',context)
 	
