@@ -9,10 +9,12 @@
 {% block contents%}
 
 {% if attendance_url %}
-  <p>share the attendance link </p>
+  <p>share the attendance link or the unique identifier  </p>
   
   <div id="copylink">
   		<p > <a href="{{attendance_url}}"> {{attendance_url}}</a></p><i class="bi bi-clipboard"></i>
+      <p> </p>
+      <p>{{identifier}}</p>
   </div>
 {% endif%}
 

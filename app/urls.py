@@ -18,7 +18,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path
 from home.views import home_view
-from create.views import student_take_attendance,create_attendance,office_take_attendance,custom_404
+from create.views import student_take_attendance,create_attendance,office_take_attendance,custom_404,attendance_identifier
 from user.views import user_view
 from login.views import login_view
 from logout.views import logout_view
@@ -33,6 +33,7 @@ urlpatterns = [
     path('office_take_attendance/<slug:identifier>/',office_take_attendance, name='office_take_attendance'),
     path('student_take_attendance/<slug:identifier>/',student_take_attendance, name='student_take_attendance'),
     path('create',create_attendance, name='create_attendance'),
+    path('attendance_identifier',attendance_identifier, name='attendance_identifier'),
     path('user',user_view, name='user'),
     path('about',about_view, name='about'),
     path('login',login_view, name='login'),

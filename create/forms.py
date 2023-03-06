@@ -3,6 +3,11 @@ import datetime
 from django.utils import timezone
 
 
+class IdentifierForm(forms.Form):
+	identifier = forms.CharField(required=True,max_length=36,label="Enter code(Max 36) ",
+		widget=forms.TextInput(attrs={'id':'identifier-input'}))
+
+
 class StudentForm(forms.Form):
 	name = forms.CharField(required=True,max_length=100)
 	reg_number = forms.CharField(required=True,max_length=50)

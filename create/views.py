@@ -1,35 +1,18 @@
 from django.shortcuts import render,redirect
 
-from .forms import StudentForm, OfficeForm,StudentAttendanceCreationForm,OfficeAttendanceCreationForm
+from .forms import StudentForm, OfficeForm,StudentAttendanceCreationForm,OfficeAttendanceCreationForm,IdentifierForm
 from .models import ( StudentAttendanceCreationModel, 
 OfficeAttendanceCreationModel, StudentAttendanceTakingModel, OfficeAttendanceTakingModel )
 import geoip2
 from django.contrib import messages
 from django.urls import reverse
 import datetime
-
+from geopy.distance import distance 
 # Create your views here.
 
-# def attendance_links(request,identifier):
-
-# 	context = {}
-# 	try:
-# 		studentattendance_id = StudentAttendanceCreationModel.objects.get(identifier=identifier)
-# 		attendance_url = request.build_absolute_uri(reverse('student_take_attendance',args=[identifier]))
-# 	except StudentAttendanceCreationModel.DoesNotExist:
-
-# 		try:
-# 			officeattendance_id = OfficeAttendanceCreationModel.objects.get(identifier=identifier)
-# 			attendance_url = request.build_absolute_uri(reverse('office_take_attendance',args=[officeattendance_id]))
-# 		except OfficeAttendanceCreationModel.DoesNotExist:
-# 			attendance_url = None
-# 	context['attendance_url'] = attendance_url
-# 	return render(request,'links.html',context)
 
 
-
- 
-
+	
 def create_attendance(request):
 	if request.method == 'POST':
 		if 'student_form' in request.POST:
@@ -52,7 +35,7 @@ def create_attendance(request):
 																,longitude=longitude,latitude=latitude)
 				stdInstance.save()
 				attendance_url = request.build_absolute_uri(reverse('student_take_attendance',args=[stdInstance.identifier]))
-				context ={'attendance_url':attendance_url}
+				context ={'attendance_url':attendance_url,'identifier':stdInstance.identifier}
 
 				return render(request, 'links.html',context)
 
@@ -78,7 +61,7 @@ def create_attendance(request):
 				offInstance.save()
 				attendance_url = request.build_absolute_uri(reverse('office_take_attendance',args=[offInstance.identifier]))
 
-				context={'attendance_url':attendance_url}
+				context={'attendance_url':attendance_url,'identifier':offInstance.identifier}
 				return render(request, 'links.html',context)
 		studentattendanceForm = StudentAttendanceCreationForm(request.POST or None,prefix='student_form')
 		officeattendanceForm = OfficeAttendanceCreationForm(request.POST or None,prefix='office_form' )
@@ -116,6 +99,7 @@ def student_take_attendance(request,identifier,*args,**kwargs):
 		context ={
 			'student_form':student_form,
 			'studentattendance_url':studentattendance_url,
+			'attendance_title':studentattendance_url.attendanceTitle
 			}
 		
 		return render(request , 'student_take_attendance.html',context)
@@ -146,6 +130,8 @@ def office_take_attendance(request,identifier,*args,**kwargs):
 		context ={
 			'office_form':office_form,
 			'officeattendance_ur':officeattendance_ur,
+			'attendance_title':officeattendance_ur.attendanceTitle
+			
 			}
 		
 		return render(request , 'office_take_attendance.html',context)
@@ -154,6 +140,32 @@ def office_take_attendance(request,identifier,*args,**kwargs):
 		messages.error(request,"The url you requested does not exist or has the attendance time has ellapsed")
 		
 		return redirect('404.html')
+
+
+
+
+def attendance_identifier(request):
+    if request.method == "POST":
+        identifier_code = IdentifierForm(request.POST)
+        if identifier_code.is_valid():
+            identifier = identifier_code.cleaned_data['identifier']
+            try:
+                stdidentifier = StudentAttendanceCreationModel.objects.get(identifier=identifier)
+                return redirect('student_take_attendance', identifier=identifier)
+            except StudentAttendanceCreationModel.DoesNotExist:
+                pass
+
+            try:
+                offidentifier = OfficeAttendanceCreationModel.objects.get(identifier=identifier)
+                return redirect('office_take_attendance', identifier=identifier)
+            except OfficeAttendanceCreationModel.DoesNotExist:
+                pass
+    else:
+        identifierform = IdentifierForm()
+        context = {'identifierform': identifierform}
+        return render(request, 'identifier.html', context)
+
+
 
 
 

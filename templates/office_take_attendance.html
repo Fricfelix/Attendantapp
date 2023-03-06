@@ -8,21 +8,53 @@
 
 {% block contents%}
 
-<h1>Take attendance</h1>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-4">
+      <div class="card mb-4 mt-md-4">
+        <div class="card-body">
+          <h5 class="card-title">Location</h5>
+          <p class="card-text">Please turn on your location to enable attendance tracking</p>
+          <div class="custom-control ">
+            <input type="checkbox" class="custom-control-input" id="locationSwitch" checked data-toggle="toggle" data-onstyle="primary">
+            <label class="custom-control-label" for="locationSwitch">Enable location</label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-8">
+      <h1>{{attendance_title}} attendance</h1>
+      <form method="post" action="" id="office-form">{% csrf_token %}
+        {{office_form|crispy}}
+        <input class="btn btn-success" type="submit" name="office_form" value="submit"/>
+      </form>
+    </div>
+  </div>
+</div>
 
 
-<div >
-  
+<!-- 
+<div class="custom-control custom-switch ml-4 mr-4 ">
+  <input id="locationSwitch" type="checkbox" checked data-toggle="toggle" data-onstyle="info">
+  <label for="locationSwitch">Enable loction</label>
+</div>
 
-  {% if office_form %}
+{% if office_form %}
+<div class="container">  
+  <div class="row">
+    <div class="col-md-8 mx-auto">
+      <h1>{{attendance_title}} attendance</h1>
 
     <form method="post" action="" id="office-form" >{% csrf_token %}
         {{office_form|crispy}}
         <input class="btn btn-success" type="submit" name="office_form" value="submit"/>
     </form>
+    </div>
+  </div>
 </div>
   
-
+ -->
 {% endif %}
 
 

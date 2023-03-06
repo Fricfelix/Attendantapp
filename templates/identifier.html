@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+
+{% block head %}
+
+{% endblock %}
+
+{% block contents%}
+
+<div class="col-md-8">
+      <p>PLEASE INSERT ATTENDANCE CODE TO TAKE ATTENDANCE </p>
+</div>
+
+<div class="col-md-8">
+      <form method="post" action="{% url 'attendance_identifier' %}" id="identifier">{% csrf_token %}
+        {{identifierform|crispy}}
+        <input class="btn btn-success" type="submit" name="attendance_submit" />
+      </form>
+</div>
+
+
+{% endblock%}
+
+
+
+{% block scripts %}
+
+      <script>
+            var inputField = document.getElementById('identifier-input'); // replace "field_name" with the name of your input field
+            inputField.addEventListener('input', function() {
+            if (inputField.value.length < 36) {
+            inputField.style.borderColor = 'red';
+            } else {
+                  inputField.style.borderColor = 'green';
+            }
+            });     
+      </script>
+{% endblock%}
