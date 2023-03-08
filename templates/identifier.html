@@ -9,8 +9,19 @@
 {% block contents%}
 
 <div class="col-md-8">
-      <p>PLEASE INSERT ATTENDANCE CODE TO TAKE ATTENDANCE </p>
+      <h1 class="text-center ">please insert code to take attendance </h1>
+      {% if messages %}
+      <div class=" mb-3 ">
+            <div class="messages" >
+            {% for message in messages %}
+                  <div {% if message.tags %} class="{{ message.tags }}  "{% endif %}>{{ message }}</div>
+            {% endfor %}
+      </div>
+      </div>
+
+      {% endif %}
 </div>
+
 
 <div class="col-md-8">
       <form method="post" action="{% url 'attendance_identifier' %}" id="identifier">{% csrf_token %}
@@ -34,6 +45,18 @@
             } else {
                   inputField.style.borderColor = 'green';
             }
-            });     
+            });    
+
+
+
+            
+            $(document).ready(function(){
+            window.setTimeout(function() {
+            $(".messages").fadeTo(500, 0).slideUp(500, function(){
+                  $(this).remove();
+            });
+            }, 5000);
+            });
+
       </script>
 {% endblock%}

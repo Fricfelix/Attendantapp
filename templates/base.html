@@ -41,7 +41,7 @@
 </head>
 <body>
 
-  
+
 <nav class="navbar bg-light navbar-light navbar-expand-lg">
     <div class="container-fluid px-2">
 
@@ -64,6 +64,10 @@
 
                 <li class="nav-item">
                     <a href="/create" class="nav-link {% if request.path == '/create' %}active{% endif %}">Create attendance</a></li>
+
+                <li class="nav-item">
+                    <a href="/attendance_identifier" class="nav-link {% if request.path == '/attendance_identifier' %}active{% endif %}">Take attendance</a></li>
+
 
                 <li class="nav-item">
                     <a href="/contact" class="nav-link {% if request.path == '/contact' %}active{% endif %}">Contact us</a></li>

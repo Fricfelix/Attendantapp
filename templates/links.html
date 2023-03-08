@@ -8,19 +8,40 @@
 
 {% block contents%}
 
-{% if attendance_url %}
-  <p>share the attendance link or the unique identifier  </p>
-  
-  <div id="copylink">
-  		<p > <a href="{{attendance_url}}"> {{attendance_url}}</a></p><i class="bi bi-clipboard"></i>
-      <p> </p>
-      <p>{{identifier}}</p>
-  </div>
-{% endif%}
+<div class="col-md-8">
+      {% if messages %}
+      <div class=" mb-3 ">
+            <div class="messages" >
+            {% for message in messages %}
+                  <div {% if message.tags %} class="{{ message.tags }}  "{% endif %}>{{ message }}</div>
+            {% endfor %}
+      </div>
+      </div>
+
+      {% endif %}
+
+
+    <h1 class="text-center h5">share the attendance link or the unique identifier </h1>
+
+  {% if attendance_url %}
+    <div id="copylink">
+        <p > <a href="{{attendance_url}}"> {{attendance_url}}</a></p>
+        <p>{{identifier}}</p>
+    </div>
+  {% endif%}
+</div>
+
 
 {% block scripts %}
 <script>
 	
+  $(document).ready(function(){
+            window.setTimeout(function() {
+            $(".messages").fadeTo(500, 0).slideUp(500, function(){
+                  $(this).remove();
+            });
+            }, 5000);
+            });
 
 </script>
 

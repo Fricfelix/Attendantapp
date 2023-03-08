@@ -33,10 +33,10 @@ class StudentAttendanceCreationForm(forms.Form):
 		attendance_duration = cleaned_data.get('attendance_duration')
 		if not location_point_range:
 			cleaned_data['location_point_range']=100.00
-		if not attendance_duration:
-			cleaned_data['attendance_duration'] = timezone.now() + datetime.timedelta(hours=24)
-		else:
-			cleaned_data['attendance_duration']=timezone.make_aware(attendance_duration)
+		# if not attendance_duration:
+		# 	cleaned_data['attendance_duration'] = timezone.now() + datetime.timedelta(hours=24)
+		# else:
+		# 	cleaned_data['attendance_duration']=timezone.make_aware(attendance_duration)
 		return cleaned_data
 
 
@@ -45,7 +45,7 @@ class OfficeAttendanceCreationForm(forms.Form):
 	location_point_range = forms.FloatField(required=False,
 		widget=forms.NumberInput(attrs={'step':'0.01','min':'0','max':'100'}),
 		label="Range of attendance coverage (meters)")
-	attendance_duration = forms.DurationField(required=False, widget =forms.DateTimeInput(attrs={'type':'datetime-local'}))
+	attendance_duration = forms.DateTimeField(required=False, widget =forms.DateTimeInput(attrs={'type':'datetime-local'}))
 
 	def clean(self):
 		cleaned_data = super().clean()
@@ -53,11 +53,11 @@ class OfficeAttendanceCreationForm(forms.Form):
 		attendance_duration = cleaned_data.get('attendance_duration')
 		if not location_point_range:
 			cleaned_data['location_point_range']=100.00
-		if not attendance_duration:
-			cleaned_data['attendance_duration'] = timezone.now() + datetime.timedelta(hours=24)
+		# if not attendance_duration:
+		# 	cleaned_data['attendance_duration'] = timezone.now() + datetime.timedelta(hours=24)
 
-		else:
-			cleaned_data['attendance_duration']=timezone.make_aware(attendance_duration)
+		# else:
+		# 	cleaned_data['attendance_duration']=timezone.make_aware(attendance_duration)
 			
 		return cleaned_data
 

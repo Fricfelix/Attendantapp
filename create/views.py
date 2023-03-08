@@ -8,11 +8,13 @@ from django.contrib import messages
 from django.urls import reverse
 import datetime
 from geopy.distance import distance 
+from django.utils import timezone
+from django.forms import DateTimeField
 # Create your views here.
 
 
 
-	
+
 def create_attendance(request):
 	if request.method == 'POST':
 		if 'student_form' in request.POST:
@@ -22,20 +24,15 @@ def create_attendance(request):
 				longitude = request.POST.get('longitude')
 				attendanceTitle=studentattendanceForm.cleaned_data['attendanceTitle']
 				location_point_range=studentattendanceForm.cleaned_data['location_point_range']
-				attendance_duration=str(studentattendanceForm.cleaned_data['attendance_duration'])
-				if not attendance_duration or attendance_duration=='':
-					attendance_duration=datetime.timedelta(hours=24)
-				else:
-					attendance_duration=str(attendance_duration)
-					if attendance_duration.startswith('1 day '):
-						attendance_duration='1 day '+ attendance_duration[7:]
-						attendance_duration=datetime.datetime.strptime(attendance_duration,'%d day %H:%M:%S')
+				attendance_duration=studentattendanceForm.cleaned_data['attendance_duration']
+				
 				stdInstance = StudentAttendanceCreationModel(attendanceTitle=attendanceTitle,location_point_range=location_point_range,
 																attendance_duration=attendance_duration
 																,longitude=longitude,latitude=latitude)
 				stdInstance.save()
 				attendance_url = request.build_absolute_uri(reverse('student_take_attendance',args=[stdInstance.identifier]))
 				context ={'attendance_url':attendance_url,'identifier':stdInstance.identifier}
+				messages.success(request, 'Attendance created ')
 
 				return render(request, 'links.html',context)
 
@@ -46,15 +43,8 @@ def create_attendance(request):
 				longitude = request.POST.get('longitude')
 				attendanceTitle=officeattendanceForm.cleaned_data['attendanceTitle']
 				location_point_range=officeattendanceForm.cleaned_data['location_point_range']
-				attendance_duration=str(officeattendanceForm.cleaned_data['attendance_duration'])
-				if not attendance_duration or attendance_duration=='':
-					attendance_duration=datetime.timedelta(hours=24)
-				else:
-					attendance_duration=str(attendance_duration)
-					if attendance_duration.startswith('1 day '):
-						attendance_duration='1 day '+ attendance_duration[7:]
-						attendance_duration=datetime.datetime.strptime(attendance_duration,'%d day %H:%M:%S')
-				print(attendance_duration)
+				attendance_duration=officeattendanceForm.cleaned_data['attendance_duration']
+				
 				offInstance = OfficeAttendanceCreationModel(attendanceTitle=attendanceTitle,
 															location_point_range=location_point_range,
 															attendance_duration=attendance_duration,longitude=longitude,latitude=latitude)
@@ -63,11 +53,7 @@ def create_attendance(request):
 
 				context={'attendance_url':attendance_url,'identifier':offInstance.identifier}
 				return render(request, 'links.html',context)
-		studentattendanceForm = StudentAttendanceCreationForm(request.POST or None,prefix='student_form')
-		officeattendanceForm = OfficeAttendanceCreationForm(request.POST or None,prefix='office_form' )
-		context={'studentattendanceForm':studentattendanceForm,'officeattendanceForm':officeattendanceForm}
-		return render(request,'create.html',context)
-	
+		
 	studentattendanceForm = StudentAttendanceCreationForm(request.POST or None,prefix='student_form')
 	officeattendanceForm = OfficeAttendanceCreationForm(request.POST or None,prefix='office_form' )
 	context = {'studentattendanceForm': studentattendanceForm,
@@ -126,6 +112,7 @@ def office_take_attendance(request,identifier,*args,**kwargs):
 			officeModelInstance.save()
 			return redirect('/')
 
+
 		office_form = OfficeForm(prefix="officeform")
 		context ={
 			'office_form':office_form,
@@ -153,13 +140,15 @@ def attendance_identifier(request):
                 stdidentifier = StudentAttendanceCreationModel.objects.get(identifier=identifier)
                 return redirect('student_take_attendance', identifier=identifier)
             except StudentAttendanceCreationModel.DoesNotExist:
-                pass
+            	pass
+            
 
             try:
                 offidentifier = OfficeAttendanceCreationModel.objects.get(identifier=identifier)
                 return redirect('office_take_attendance', identifier=identifier)
             except OfficeAttendanceCreationModel.DoesNotExist:
-                pass
+            	messages.error(request,"It seems the code you provided does not exist, please check the code and try again")
+            return redirect ("/attendance_identifier")
     else:
         identifierform = IdentifierForm()
         context = {'identifierform': identifierform}
