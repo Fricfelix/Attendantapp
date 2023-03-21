@@ -14,7 +14,21 @@ from pathlib import Path
 import os
 from dotenv import load_dotenv
 
+import cloudinary 
+import cloudinary.uploader
+import cloudinary.api
+
 load_dotenv()
+
+cloudinary.config(
+    cloud_name = os.getenv("CLOUD_NAME"),
+    api_key = os.getenv("API_KEY"),
+    api_secret = os.getenv("API_SECRETE"),
+    secure = True
+
+    )
+
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -49,8 +63,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'crispy_forms',
+    'django.contrib.humanize',
     'geoip2',
     'ipware',
+    'cloudinary',
+    
     # My own installed app
 
     'home',
@@ -60,6 +77,8 @@ INSTALLED_APPS = [
     'user',
     'about',
     'contact',
+    'signup',
+
 
 ]
 
@@ -126,6 +145,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
@@ -156,6 +176,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 GEOIP_PATH = os.path.join(BASE_DIR,'data','GeoLite2-City.mmdb')
 
+AUTH_USER_MODEL = 'user.User'
+LOGIN_REDIRECT_URL = 'home'
+LOGOUT_REDIRECT_URL = 'home'
 
 
 from django.contrib.messages import constants as messages

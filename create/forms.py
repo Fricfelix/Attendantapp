@@ -33,10 +33,10 @@ class StudentAttendanceCreationForm(forms.Form):
 		attendance_duration = cleaned_data.get('attendance_duration')
 		if not location_point_range:
 			cleaned_data['location_point_range']=100.00
-		# if not attendance_duration:
-		# 	cleaned_data['attendance_duration'] = timezone.now() + datetime.timedelta(hours=24)
-		# else:
-		# 	cleaned_data['attendance_duration']=timezone.make_aware(attendance_duration)
+		if not attendance_duration:
+			cleaned_data['attendance_duration'] = timezone.now() + datetime.timedelta(hours=24)
+		else:
+			cleaned_data['attendance_duration']=timezone.make_naive(timezone.localtime(attendance_duration))
 		return cleaned_data
 
 
@@ -53,11 +53,11 @@ class OfficeAttendanceCreationForm(forms.Form):
 		attendance_duration = cleaned_data.get('attendance_duration')
 		if not location_point_range:
 			cleaned_data['location_point_range']=100.00
-		# if not attendance_duration:
-		# 	cleaned_data['attendance_duration'] = timezone.now() + datetime.timedelta(hours=24)
+		if not attendance_duration:
+			cleaned_data['attendance_duration'] = timezone.now() + datetime.timedelta(hours=24)
 
-		# else:
-		# 	cleaned_data['attendance_duration']=timezone.make_aware(attendance_duration)
+		else:
+			cleaned_data['attendance_duration']=timezone.make_naive(timezone.localtime(attendance_duration))
 			
 		return cleaned_data
 

@@ -6,6 +6,23 @@
 {% endblock %}
 
 {% block contents%}
+
+    <div class="container-fluid pb-2">
+
+      
+
+        {% if messages %}
+            <div class="title text-center text-danger rounded p-2 pb-2">
+                {% for message in messages %}
+          <div {% if message.tags %} class="{{ message.tags }} "{% endif %}>
+            <span>{{message}}</span>
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+
 <div class="jumbotron">
   <h1 class="display-4">Mark Me Present</h1>
   <p class="lead">Student might not like us but we are dedicated in ensuring an honesty in a place of school or offices when it comes to being present in a lecture hall or in an office meeting .With our location based attendance system no one can take attendance without actually being present in the lecture hall or meeting.</p>

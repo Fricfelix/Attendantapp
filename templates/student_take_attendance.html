@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
+{% load humanize %}
 
 
 {% block head %}
@@ -7,6 +8,12 @@
 {% endblock %}
 
 {% block contents%}
+
+
+
+
+
+
 
 <h1> Take Attendance for {{attendance_title}}</h1>
 
@@ -21,7 +28,24 @@
 
   {% endif %}
 
-  
+{% block scripts %}  
+<script >
+var remaining_seconds = {{ remaining_time.total_seconds }};
+function countdown() {
+    if (remaining_seconds > 0) {
+        remaining_seconds -= 1;
+        var minutes = Math.floor(remaining_seconds / 60);
+        var seconds = Math.floor(remaining_seconds % 60);
+        var remaining_time_string = minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
+        document.getElementById("remaining-time").textContent = remaining_time_string;
+        setTimeout(countdown, 1000);
+    } else {
+        document.getElementById("remaining-time").textContent = "Time's up!";
+    }
+}
+countdown();
+</script>
+{% endblock  %} 
 
 
 {% endblock%}

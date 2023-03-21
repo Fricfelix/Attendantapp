@@ -31,6 +31,8 @@
 </div>
 
 
+
+
 <div >
 
   {% if studentattendanceForm %}
@@ -67,6 +69,7 @@
   navigator.geolocation.getCurrentPosition(function(position) {
     let latitude = position.coords.latitude;
     let longitude = position.coords.longitude;
+
     
     // Set the value of the hidden fields
     $('student-form #latitude,#office-form,#latitude').val(latitude);
@@ -76,32 +79,6 @@
 } else {
   console.log('Geolocation is not supported by this browser.');
 }
-
-
-// if (navigator.geolocation) {
-//   navigator.geolocation.getCurrentPosition(function(position) {
-//   let latitude = position.coords.latitude;
-//   let longitude = position.coords.longitude;
-
-//   // You can pass the latitude and longitude to the backend using AJAX
-//   $.ajax({
-//       url: '/create ',
-//       type: 'POST',
-//       data: {
-//           'latitude': latitude,
-//           'longitude': longitude,
-//           csrfmiddlewaretoken: '{{ csrf_token }}'
-//       },
-//       success: function(data) {
-//         console.log('Location data sent to the backend');
-//         console.log(longitude)
-//       }
-//   });
-// });
-// } else {
-// console.log('Geolocation is not supported by this browser.');
-// };
-
 
 
 let studentForm = document.getElementById("student-form");

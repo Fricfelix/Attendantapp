@@ -22,6 +22,8 @@ def create_attendance(request):
 			if studentattendanceForm.is_valid():
 				latitude = request.POST.get('latitude')
 				longitude = request.POST.get('longitude')
+				if longitude == '':
+					pass
 				attendanceTitle=studentattendanceForm.cleaned_data['attendanceTitle']
 				location_point_range=studentattendanceForm.cleaned_data['location_point_range']
 				attendance_duration=studentattendanceForm.cleaned_data['attendance_duration']
@@ -31,7 +33,7 @@ def create_attendance(request):
 																,longitude=longitude,latitude=latitude)
 				stdInstance.save()
 				attendance_url = request.build_absolute_uri(reverse('student_take_attendance',args=[stdInstance.identifier]))
-				context ={'attendance_url':attendance_url,'identifier':stdInstance.identifier}
+				context ={'attendance_url':attendance_url,'identifier':stdInstance.identifier,'student_attendance':stdInstance}
 				messages.success(request, 'Attendance created ')
 
 				return render(request, 'links.html',context)
@@ -51,7 +53,7 @@ def create_attendance(request):
 				offInstance.save()
 				attendance_url = request.build_absolute_uri(reverse('office_take_attendance',args=[offInstance.identifier]))
 
-				context={'attendance_url':attendance_url,'identifier':offInstance.identifier}
+				context={'attendance_url':attendance_url,'identifier':offInstance.identifier,'office_attendance':offInstance}
 				return render(request, 'links.html',context)
 		
 	studentattendanceForm = StudentAttendanceCreationForm(request.POST or None,prefix='student_form')
@@ -64,37 +66,39 @@ def create_attendance(request):
    
 
 
+def student_take_attendance(request, identifier, *args, **kwargs):
+    try:
+        studentattendance_url = StudentAttendanceCreationModel.objects.get(identifier=identifier)
+        if studentattendance_url.attendance_duration <= timezone.now():
+            # attendance duration has expired, delete the instance and return error message
+            studentattendance_url.delete()
+            messages.error(request, "OOPS!! Duration for attendance has expired.")
+            return render(request,'expiredlinks.html')
+        
+        student_form = StudentForm(request.POST or None, prefix="studentform")
+        if student_form.is_valid():
+            name = student_form.cleaned_data['name']
+            reg_number = student_form.cleaned_data['reg_number']
+            department = student_form.cleaned_data['department']
 
+            # create a new instance of the first model
+            studentModelInstance = StudentAttendanceTakingModel(
+                attendance=studentattendance_url, name=name, reg_number=reg_number, department=department)
+            studentModelInstance.save()
+            messages.success(request,'Attendance taken successfully')
+            return render(request,'expiredlinks.html')
 
-def student_take_attendance(request,identifier,*args,**kwargs):
-	try:
-		studentattendance_url = StudentAttendanceCreationModel.objects.get(identifier=identifier)
-		student_form = StudentForm(request.POST or None,prefix="studentform")
-		if student_form.is_valid():
-			name = student_form.cleaned_data['name']
-			reg_number = student_form.cleaned_data['reg_number']
-			department = student_form.cleaned_data['department']
+        student_form = StudentForm(prefix="studentform")
+        context = {
+            'student_form': student_form,
+            'studentattendance_url': studentattendance_url,
+            'attendance_title': studentattendance_url.attendanceTitle
+        }
+        return render(request, 'student_take_attendance.html', context)
 
-			# create a new instance of the first model
-			studentModelInstance = StudentAttendanceTakingModel(attendance=studentattendance_url,name=name,reg_number=reg_number,department=department)
-			studentModelInstance.save()
-			return redirect('/')
-
-	
-		student_form = StudentForm(prefix="studentform")
-		context ={
-			'student_form':student_form,
-			'studentattendance_url':studentattendance_url,
-			'attendance_title':studentattendance_url.attendanceTitle
-			}
-		
-		return render(request , 'student_take_attendance.html',context)
-
-	except StudentAttendanceCreationModel.DoesNotExist:
-		messages.error(request,"The url you requested does not exist or has the attendance time has ellapsed")
-		
-		return redirect('404.html')
-
+    except StudentAttendanceCreationModel.DoesNotExist:
+        messages.error(request, "The url you requested does not exist or the attendance time has elapsed.")
+        return render(request,'expiredlinks.html')
 
 
 
@@ -102,6 +106,11 @@ def student_take_attendance(request,identifier,*args,**kwargs):
 def office_take_attendance(request,identifier,*args,**kwargs):
 	try:
 		officeattendance_ur = OfficeAttendanceCreationModel.objects.get(identifier=identifier)
+		if officeattendance_ur.attendance_duration <= timezone.now():
+			officeattendance_ur.delete()
+			messages.error(request, "OOPS!! Duration for attendance has expired.")
+			return render(request, 'expiredlinks.html')
+
 		officeattendanceForm = OfficeForm(request.POST or None,prefix="officeform")
 		
 		if officeattendanceForm.is_valid():
@@ -110,7 +119,8 @@ def office_take_attendance(request,identifier,*args,**kwargs):
 
 			officeModelInstance = OfficeAttendanceTakingModel(attendance =officeattendance_ur,name=name,position=position)
 			officeModelInstance.save()
-			return redirect('/')
+			messages.success(request,'Attendance taken successfully')
+			return render(request,'expiredlinks.html')
 
 
 		office_form = OfficeForm(prefix="officeform")
@@ -126,7 +136,7 @@ def office_take_attendance(request,identifier,*args,**kwargs):
 	except StudentAttendanceCreationModel.DoesNotExist:
 		messages.error(request,"The url you requested does not exist or has the attendance time has ellapsed")
 		
-		return redirect('404.html')
+		return render(request,'expiredlinks.html')
 
 
 
