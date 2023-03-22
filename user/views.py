@@ -14,13 +14,15 @@ from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode  
 from django.template.loader import render_to_string
 from django.urls import reverse
+import uuid
+from django.utils import timezone
 
 # Create your views here.
 
 def send_confirmation_email(user,request):
 	current_site = get_current_site(request)
 	uid = urlsafe_base64_encode(force_bytes(user.pk))
-	token = str(user.email_confirmation_token)
+	token = user.email_confirmation_token
 	confirmation_url = request.build_absolute_uri(reverse('confirm_email',kwargs={'uidb64':uid,'token':token}))
 	subject = "Please confirm email to activate your account"
 	message = render_to_string('comfirm-email.html',{'user':user,'domain':current_site.domain,'confirmation_url':confirmation_url})
@@ -68,10 +70,14 @@ def login(request):
 	if request.method == 'POST':
 		form = LogInForm(request.POST)
 		if form.is_valid():
-			user = form.cleaned_data['user']
-			authenticate(request,username=user.email,password=form.cleaned_data['password'])
-			login(request, user)
-			return redirect('home')
+			authenticate_user = authenticate(request,email=form.cleaned_data['email'],password=form.cleaned_data['password'])
+			if authenticate_user is not None:
+
+				login(request, authenticate_user)
+				return redirect('home')
+			else:
+				form.add_error(None,'Invalid login credentials')
+
 	else:
 		form = LogInForm()
 	return render(request,'login.html',{'form':form})
@@ -92,10 +98,19 @@ def confirm_email(request,uidb64,token):
 	except:
 		user = None
 
-	if user is not None and default_token_generator.check_token(user,token):
-		user.email_confirmed = True
-		user.save()
-		messages.success(request,"your email has been confirmed.thanks for signing up!.")
+	if user is not None and user.email_confirmation_token==token:
+		# check if the confirmation link has expired
+		token_time = uuid.UUID(token).time
+		current_time = timezone.now().timestamp()
+		if current_time - token_time<=24 * 60 * 60:
+			user.email_confirmed = True
+			user.is_active = True
+			user.save()
+			messages.success(request,"your email has been confirmed.thanks for signing up!.")
+			return redirect('login')
+
+		else:
+			messages.error(request,'The confirmation link has expird')
 	else:
-		messages.error(request,'The confirmation link was invalid ,possibly because it has expired')
+		messages.error(request,'The confirmation link was invalid ')
 	return redirect('home')

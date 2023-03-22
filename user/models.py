@@ -29,10 +29,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
     name = models.CharField(max_length=250)
     profile_image_url = models.URLField(blank=True, null=True)
-    email_confirmation_token = models.URLField(default=uuid.uuid4, editable=False)
+    email_confirmation_token = models.CharField(max_length=36, default=uuid.uuid1().hex, editable=False)
     email_confirmed = models.BooleanField(default=False)
 
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
 
     objects = UserManager()
