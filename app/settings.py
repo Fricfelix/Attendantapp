@@ -67,7 +67,7 @@ INSTALLED_APPS = [
     'geoip2',
     'ipware',
     'cloudinary',
-    
+
     # My own installed app
 
     'home',
@@ -176,9 +176,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 GEOIP_PATH = os.path.join(BASE_DIR,'data','GeoLite2-City.mmdb')
 
-AUTH_USER_MODEL = 'user.User'
+AUTH_USER_MODEL = 'user.UserProfile'
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
+AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.ModelBackend',]
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 
 from django.contrib.messages import constants as messages
