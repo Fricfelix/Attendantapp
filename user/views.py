@@ -205,25 +205,6 @@ def signup(request):
 
 
 
-# def signup(request):
-#     if request.method == 'POST':
-#         form = SignUpForm(request.POST, request.FILES)
-#         if form.is_valid():
-
-#             user = form.save(commit=False)
-#             user.is_active = False
-#             user.save()
-#             to_email = form.cleaned_data.get('email')
-#             send_confirmation_email(user,request)
-#             messages.success(request, "Account created successfuly. Please check your email to confirm your account")
-
-#             return render(request, 'login.html', {'email': to_email})
-#     else:
-#         form = SignUpForm()
-#     return render(request, 'signup.html', {'form': form})
-
-
-
 def confirm_email(request, uid, token):
     try:
         uid = urlsafe_base64_decode(uid).decode()
