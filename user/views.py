@@ -120,13 +120,15 @@
 
 
 from django.shortcuts import render, redirect
-from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth import logout as auth_logout
+from django.contrib.auth import login as auth_login
+from django.contrib.auth import authenticate
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail,EmailMessage
 from django.template.loader import render_to_string
 from django.utils.encoding import force_bytes
-from django.utils.http import urlsafe_base64_encode
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode 
 from django.contrib.sites.shortcuts import get_current_site
 from django.urls import reverse
 # from django.utils.translation import ugettext_lazy as _
@@ -134,20 +136,23 @@ from django.urls import reverse
 from user.forms import SignUpForm
 from django.conf import settings
 import cloudinary.uploader
+from . models import UserProfile
+from django.contrib import messages
+import uuid
 
 
 
 def send_confirmation_email(user,request):
   current_site = get_current_site(request)
   uid = urlsafe_base64_encode(force_bytes(user.pk))
-  token = user.email_confirmation_token
+  token = default_token_generator.make_token(user)
   confirmation_url = request.build_absolute_uri(reverse('confirm_email',kwargs={'uid':uid,'token':token}))
   subject = "Please confirm email to activate your account"
-  message = render_to_string('comfirm-email.html',{'user':user,'domain':current_site.domain,'confirmation_url':confirmation_url})
+  message = render_to_string('confirm-email.html',{'user':user,'domain':current_site.domain,'confirmation_url':confirmation_url})
     
   email_from = settings.EMAIL_HOST_USER
-  recipient_list = [user.email]
-  send_mail = EmailMessage(subject,message,email_from,recipient_list)
+  recipient_lists = [user.email]
+  send_mail = EmailMessage(subject,message,email_from,recipient_lists)
   send_mail.content_type = 'html'
   send_mail.send()
 
@@ -163,7 +168,7 @@ def signup(request):
             user.save()
             to_email = form.cleaned_data.get('email')
             send_confirmation_email(user,request)
-            messages.success(request, "Account created successfuly. Please check your email to comfirm your account")
+            messages.success(request, "Account created successfuly. Please check your email to confirm your account")
 
             return render(request, 'login.html', {'email': to_email})
     else:
@@ -172,11 +177,11 @@ def signup(request):
 
 
 
-def confirm_email(request, uidb64, token):
+def confirm_email(request, uid, token):
     try:
-        uid = urlsafe_base64_decode(uidb64).decode()
-        user = User.objects.get(pk=uid)
-    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+        uid = urlsafe_base64_decode(uid).decode()
+        user = UserProfile.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, UserProfile.DoesNotExist):
         user = None
 
     if user and default_token_generator.check_token(user, token):
@@ -184,7 +189,7 @@ def confirm_email(request, uidb64, token):
         user.save()
         messages.success(request,"your email has been confirmed.thanks for signing up!.")
         return redirect('login')
-        messages.error(request,'The confirmation link was invalid ')
+    messages.error(request,'The confirmation link was invalid ')
     return redirect('home')
 
 
@@ -197,12 +202,13 @@ def login(request):
         form = AuthenticationForm(request, request.POST)
         if form.is_valid():
             user = form.get_user()
-            login(request, user)
+            auth_login(request, user)
             return redirect('home')
     else:
         form = AuthenticationForm()
     return render(request, 'login.html', {'form': form})
 
+
 def logout(request):
-    logout(request)
+    auth_logout(request)
     return redirect('home')

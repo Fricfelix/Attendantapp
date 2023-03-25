@@ -48,7 +48,7 @@
 
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
-
+import uuid
 
 class UserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
@@ -70,10 +70,16 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
     name = models.CharField(max_length=100)
     email = models.EmailField(unique=True)
     profile_picture_url = models.URLField(blank=True)
-    email_confirmation_token = models.CharField(max_length=255, blank=True)
-    is_active = models.BooleanField(default=True)
+    email_confirmation_token = models.CharField(max_length=36, default=None, editable=False)
+    is_active = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     date_joined = models.DateTimeField(auto_now_add=True)
+
+
+    def save(self,*args, **kwargs):
+    	if not self.email_confirmation_token:
+    		self.email_confirmation_token = uuid.uuid4().hex
+    	super().save(*args,**kwargs)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['name']
