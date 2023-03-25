@@ -157,23 +157,70 @@ def send_confirmation_email(user,request):
   send_mail.send()
 
 
+def email_confirmation_requierd(view_func):
+    def view(request,*args,**kwargs):
+        if request.method=='POST':
+            email = request.POST.get('email')
+            if UserProfile.objects.filter(email=email,is_active=False).exists():
+                existing_user = UserProfile.objects.get(email=email)
+                send_confirmation_email(existing_user,request)
+                messages.error(request ,'Inactive User, email confirmation has be sent Please confirm email')
+                return redirect(reverse('signup'))
+        return view_func(request,*args,**kwargs)
+    return view 
 
+
+
+
+@email_confirmation_requierd
 def signup(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST, request.FILES)
         if form.is_valid():
-
+            email = form.cleaned_data.get('email')
             user = form.save(commit=False)
+
+            # Check if user already exists but is inactive
+            try:
+                existing_user = UserProfile.objects.get(email=email)
+                if not existing_user.is_active:
+                    send_confirmation_email(existing_user, request)
+                    messages.info(request, "An email has been sent to confirm your account. Please check your email.")
+                    return render(request, 'login.html', {'email': email})
+                else:
+                    messages.error(request, "This email address has already been registered.")
+                    return render(request, 'signup.html', {'form': form})
+            except UserProfile.DoesNotExist:
+                pass
+
+            # New user, save and send confirmation email
             user.is_active = False
             user.save()
-            to_email = form.cleaned_data.get('email')
-            send_confirmation_email(user,request)
-            messages.success(request, "Account created successfuly. Please check your email to confirm your account")
-
-            return render(request, 'login.html', {'email': to_email})
+            send_confirmation_email(user, request)
+            messages.success(request, "Account created successfully. Please check your email to confirm your account.")
+            return render(request, 'login.html', {'email': email})
     else:
         form = SignUpForm()
     return render(request, 'signup.html', {'form': form})
+
+
+
+# def signup(request):
+#     if request.method == 'POST':
+#         form = SignUpForm(request.POST, request.FILES)
+#         if form.is_valid():
+
+#             user = form.save(commit=False)
+#             user.is_active = False
+#             user.save()
+#             to_email = form.cleaned_data.get('email')
+#             send_confirmation_email(user,request)
+#             messages.success(request, "Account created successfuly. Please check your email to confirm your account")
+
+#             return render(request, 'login.html', {'email': to_email})
+#     else:
+#         form = SignUpForm()
+#     return render(request, 'signup.html', {'form': form})
 
 
 
