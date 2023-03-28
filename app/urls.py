@@ -22,7 +22,7 @@ from django.contrib import admin
 from django.urls import path,include
 from home.views import home_view
 from create.views import student_take_attendance,create_attendance,office_take_attendance,custom_404,attendance_identifier
-from user.views import signup,confirm_email,login,logout
+from user.views import signup,confirm_email,login,logout,custom_password_reset,custom_password_reset_confirm
 from about.views import about_view
 from contact.views import contact_view
 
@@ -38,10 +38,10 @@ urlpatterns = [
     path('attendance_identifier',attendance_identifier, name='attendance_identifier'),
     path('signup/',signup, name='signup'),
     path('about',about_view, name='about'),
-    # path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
-    # path('logout/', auth_views.LogoutView.as_view(template_name='logout.html'), name='logout'),
     path('login/', login , name='login'),
     path('logout/',logout , name='logout'),
+    path('password_reset/',custom_password_reset , name='custom_password_reset'),
+    path('password_reset_confirm/<str:uidb64>/<str:token>/',custom_password_reset_confirm , name='custom_password_reset_confirm'),
     path('contact',contact_view, name='contact'),
     
 

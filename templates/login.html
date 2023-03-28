@@ -21,19 +21,17 @@
     <div class="container-fluid pb-2">
 
       <div class="text-center pb-4 pt-2 fs-5"> Log in </div>
-      
-
+              
         {% if messages %}
-            <div class="title text-center text-danger rounded p-2 pb-2">
-                {% for message in messages %}
-                    <div {% if message.tags %} class="{{ message.tags }} "{% endif %}>
-                        <span>{{message}}</span>
-                        <button type="button" class="close" data-dismiss="alert">&times;</button>
-                    </div>
-                {% endfor %}
-            </div>
+        <div class=" mb-3 ">
+            <div class="messages">
+            {% for message in messages %}
+                <div {% if message.tags %} class="{{ message.tags }} px-2"{% endif %}>{{ message }}</div>
+            {% endfor %}
+        </div>
+        </div>
+
         {% endif %}
-        
 
 
     {% if form %}
@@ -42,8 +40,22 @@
             {{form|crispy}}
             <div class="pb-3s mt-3">
             <input class="btn btn-success btn-sm w-100" id="subBtn" type="submit" value="Log in">
+            
+            {% if form.errors %}
+            <div class="alert alert-danger" role="alert">
+                {% for field,errors in form.errors.items %}
+                    <strong>{{ title}}</strong>
+                    {% for error in errors %}
+                        {{error}}<br>
+                    {% endfor %}
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        
             </div>
             </form>
+            <p> <a href="{% url 'custom_password_reset' %}">Forgot password?</a></p>
         </div>
     {% else %}
 
