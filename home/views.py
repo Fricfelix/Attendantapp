@@ -12,13 +12,7 @@ from django.shortcuts import render, HttpResponse
 
 # Create your views here.
 
-   
 
-
-
-
-def home_view(request,*args,**kwargs):
-	
-	context = {		}
-	return render(request , 'index.html',context)
+def home_view(request):
+	return render(request, 'main/index.html', {})
 	

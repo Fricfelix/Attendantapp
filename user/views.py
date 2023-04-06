@@ -16,7 +16,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.urls import reverse
 from django.urls import reverse_lazy
 
-from user.forms import SignUpForm
+from user.forms import SignUpForm,FaceRecognitionForm
 from django.conf import settings
 import cloudinary.uploader
 from . models import UserProfile
@@ -80,6 +80,7 @@ def custom_password_reset_confirm(request,uidb64,token):
                 user.save()
                 messages.success(request, 'Password has been reset. You can now login with your new password')
                 return redirect('login')
+            messages.error(request,'Password does not match')
         
         form = CustomPasswordConfirmForm()
         return render(request, 'password_reset_confirm.html', {'form': form})
@@ -175,7 +176,7 @@ def confirm_email(request, uid, token):
 
 
 
-
+@email_confirmation_requierd
 def login(request):
     if request.method == 'POST':
         form = AuthenticationForm(request, request.POST)
@@ -191,6 +192,17 @@ def login(request):
 
     form = AuthenticationForm()
     return render(request, 'login.html', {'form': form})
+
+
+def recognize_faces(request):
+    if request.method == 'POST':
+        form = FaceRecognitionForm(request.POST)
+        if form.is_valid():
+            processed_image = form.recognize_faces()
+            return JsonResponse({'result': processed_image.decode('utf-8')})
+    else:
+        form = FaceRecognitionForm()
+    return render(request, 'facial_recognition.html', {'form': form})
 
 
 
