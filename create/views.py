@@ -170,4 +170,4 @@ def attendance_identifier(request):
 
 
 def custom_404(request,exception):
-	return render(request,'404.html',status=404)
+	return render(request,'main/404.html',{'path':request.path})

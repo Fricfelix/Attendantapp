@@ -15,22 +15,23 @@ Including another URLconf
 """
 # for for signup,login and logout 
 from django.contrib.auth import views as auth_views
+from django.conf.urls import handler404
 
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path,include
 from home.views import home_view
-from create.views import student_take_attendance,create_attendance,office_take_attendance,custom_404,attendance_identifier
+from create.views import student_take_attendance,create_attendance,office_take_attendance, custom_404,attendance_identifier
 from user.views import signup,confirm_email,login,logout,custom_password_reset,custom_password_reset_confirm,recognize_faces
 from about.views import about_view
 from contact.views import contact_view
 
+handler404 = custom_404
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',home_view, name='home'),
-    path('404',custom_404, name='custom_404'),
     path('office_take_attendance/<slug:identifier>/',office_take_attendance, name='office_take_attendance'),
     path('confirm_email/<str:uid>/<str:token>',confirm_email, name='confirm_email'),
     path('student_take_attendance/<slug:identifier>/',student_take_attendance, name='student_take_attendance'),
