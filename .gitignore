@@ -1,0 +1,15 @@
+# created by virtualenv automatically
+
+.env 
+_init_.py 
+_pychach_
+db.sqlite3
+geoip2/
+maxminddb/
+geopy/
+static/
+staticfiles/
+user/tests.py
+my_app
+
+

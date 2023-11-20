@@ -1,0 +1,67 @@
+
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load humanize %}
+
+
+{% block head %}
+
+{% endblock %}
+
+
+
+
+
+{% block contents%}
+
+
+
+    <h1>Facial Recognition Demo</h1>
+    <div>
+      <video id="video" width="640" height="480" autoplay></video>
+      <canvas id="canvas" width="640" height="480"></canvas>
+      <button id="capture-btn">Capture Image</button>
+    </div>
+    <div>
+      <form id="image-form" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="hidden" id="image-data" name="image_data">
+        <input type="submit" value="Recognize Faces">
+      </form>
+    </div>
+
+
+{% block scripts %}
+
+
+    <script>
+      var video = document.getElementById('video');
+      var canvas = document.getElementById('canvas');
+      var captureBtn = document.getElementById('capture-btn');
+      var context = canvas.getContext('2d');
+      
+      navigator.mediaDevices.getUserMedia({ video: true })
+        .then(function(stream) {
+          video.srcObject = stream;
+          video.play();
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+
+      captureBtn.addEventListener('click', function() {
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+        canvas.toBlob(function(blob) {
+          var reader = new FileReader();
+          reader.readAsDataURL(blob);
+          reader.onloadend = function() {
+            var base64data = reader.result;
+            $('#image-data').val(base64data);
+          }
+        }, 'image/jpeg');
+      });
+    </script>
+
+{% endblock %}
+
+{% endblock%}

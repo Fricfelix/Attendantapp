@@ -1,0 +1,53 @@
+﻿{% extends 'base2.html' %}
+{% load static %}
+
+
+
+
+{% block title %}404{% endblock %}
+
+
+
+
+{% block body %}
+    <!-- End Navbar -->
+    <!-- BradCrumb header Start-->
+    <section class="inner-header-bg">          
+            <div class="container">
+                <!-- Breadcrumb Start-->
+				    <div class="section-breadcrumb">
+						<div class="container">							
+							<div class="row">				
+								<div class="col-md-12 justify-content-center align-self-center pb-2">
+									<div class="breadcrumb-content">
+										<div class="title-section">				                    
+						                    <h1 class="title text-center text-white">404 Error</h1>
+						                </div>
+						                <div class="breadcrumb-nav">
+											<ul class="breadcrumb-link text-center list-unstyled mb-0">
+												<li class="text-white"><a href="index.html">Home</a></li>
+												<li class="text-white active">404</li>
+											</ul>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				<!-- Breadcrumb End -->
+            </div>
+    </section>
+    <!-- BradCrumb header End -->     
+ 	 <!-- Breadcrumb End -->
+    <!-- 404 Section Start-->
+    <section class="section">
+        <div class="container">
+            <img src="images/404.jpg" class="img-fluid d-block mx-auto" alt="image">
+            <h2 class="title text-center font-weight-bold mt-4">We are sorry , Page Not Found !</h2>
+            <div class="d-flex justify-content-center mt-lg-5 mt-4">
+                <a href="index.html" class="btn theme-dark-btn text-white">Back To Home</a>
+            </div>
+        </div>        
+    </section>
+    <!-- 404 Section End -->
+{% endblock  %}

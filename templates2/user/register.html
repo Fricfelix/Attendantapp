@@ -1,0 +1,124 @@
+{% extends 'base2.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+
+
+
+{% block title %}sign up{% endblock %}
+
+    
+    
+   
+    <!-- BradCrumb header Start-->
+    <section class="inner-header-bg">          
+            <div class="container">
+                <!-- Breadcrumb Start-->
+				    <div class="section-breadcrumb">
+						<div class="container">							
+							<div class="row">				
+								<div class="col-md-12 justify-content-center align-self-center pb-2">
+									<div class="breadcrumb-content">
+										<div class="title-section">				                    
+						                    <h1 class="title text-center text-white">Register</h1>
+						                </div>
+						                <div class="breadcrumb-nav">
+											<ul class="breadcrumb-link text-center list-unstyled mb-0">
+												<li class="text-white"><a href="index.html">Home</a></li>
+												<li class="text-white active">Register</li>
+											</ul>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				<!-- Breadcrumb End -->
+            </div>
+    </section>
+    <!-- BradCrumb header End -->     
+ 	<!-- Start Register -->
+   <section class="section">
+       <div class="container">
+           <div class="row justify-content-center">
+               <div class="col-lg-6">
+                    <div class="form-card bg-white border p-4">               
+                        <form class="login-form common-input-form" method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="title-section">
+                                <h2 class="title text-left">Create account</h2>
+                                <p class="grey-text font-weight-regular f-16">Please fill in this form to create an account!</p>
+                            </div>
+                            <div class="form-body mt-3 mb-3">  
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="form-group">
+                                            <label class="pb-1 grey-text" for="{{ form.username.id_for_label }}">User Name</label>
+                                            <div class="position-relative">
+                                                <i class="login-icon green-color mdi mdi-account"></i>
+                                                {{ form.username }}
+                                            </div> 
+                                        </div>
+                                    </div>                        
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="form-group">
+                                            <div class="row">
+                                                <div class="col">
+                                                    <label class="pb-1 grey-text" for="{{ form.password.id_for_label }}">Password</label>
+                                                </div>
+                                            </div>                                            
+                                            <div class="position-relative">
+                                                <i class="login-icon green-color mdi mdi-lock"></i> 
+                                                {{ form.password }}
+                                            </div>                               
+                                        </div>
+                                    </div>
+                                </div>  
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="form-group">
+                                            <label class="pb-1 grey-text" for="{{ form.email.id_for_label }}">Email Address</label>
+                                            <div class="position-relative">
+                                                <i class="login-icon green-color mdi mdi-email"></i>
+                                                {{ form.email }}
+                                            </div> 
+                                        </div>
+                                    </div> 
+                                    <div class="col-lg-12">
+                                        <div class="form-group">
+                                            <label class="pb-1 grey-text" for="{{ form.profile_picture.id_for_label }}">Profile Picture</label>
+                                            <div class="position-relative">
+                                                <input type="file" name="{{ form.profile_picture.name }}" id="{{ form.profile_picture.id_for_label }}">
+                                            </div> 
+                                        </div>
+                                    </div>                
+                                </div>
+                                                                       
+                                <div class="row">
+                                    <div class="col-lg-12 text-center mt-3">
+                                        <input type="submit" class="btn theme-dark-btn login-btn text-white w-100 text-uppercase" value="Sign Up">
+                                    </div>
+                                </div>
+                            </div>                            
+                        </form>
+
+                    </div>
+                    <div class="form-footer bg-white px-4 pt-3">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group text-center">
+                                    <span class="grey-text font-weight-regular">Already have an account?</span>
+                                    <a href="login.html" class=" font-weight-regular">Sign in</a>
+                                </div>
+                            </div>
+                        </div>  
+                    </div>
+                </div>
+           </div>
+       </div>
+   </section>
+    <!-- End Register -->
+    <!-- Start Footer -->  
+    
