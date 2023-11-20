@@ -164,14 +164,15 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-if DEBUG:
-    MEDIA_URL = '/media/'
-    STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
-    MEDIA_ROOT = os.path.join(BASE_DIR, "media")
-    STATICFILES_DIRS = [
-        os.path.join(BASE_DIR, "static", "static"),
-        os.path.join(BASE_DIR, "static")
-    ]
+
+
+MEDIA_URL = '/media/'
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles_build")
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static", "static"),
+    os.path.join(BASE_DIR, "static")
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
@@ -200,4 +201,5 @@ MESSAGE_TAGS = {
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 PASSWORD_RESET_TIMEOUT_DAYS = 3
+
 
