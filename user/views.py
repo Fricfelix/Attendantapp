@@ -153,7 +153,7 @@ def signup(request):
             return redirect('login')
     else:
         form = SignUpForm()
-    return render(request, 'user/register.html', {'form': form})
+    return render(request, 'signup.html', {'form': form})
 
 
 
